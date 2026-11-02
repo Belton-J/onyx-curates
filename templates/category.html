@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ category.name }} | Onyx Curates</title>
+
+  <!-- Import Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            onyx: {
+              bg: '#121212',
+              card: '#1A1A1A',
+              text: '#E0E0E0',
+              muted: '#888888',
+              accent: '#FFFFFF'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.4s ease-out forwards',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #121212;
+      color: #E0E0E0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #121212;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    .affiliate-btn {
+      background-color: transparent;
+      border: 1px solid #FFFFFF;
+      color: #FFFFFF;
+      transition: all 0.3s ease;
+    }
+
+    .affiliate-btn:hover {
+      background-color: #FFFFFF;
+      color: #121212;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    }
+
+    .zoom-hover:hover img.zoom-img {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+
+<body class="font-sans antialiased selection:bg-white selection:text-onyx-bg min-h-screen flex flex-col">
+
+  <!-- Sticky Minimalist Header -->
+  <header
+    class="sticky top-0 z-50 bg-onyx-bg/90 backdrop-blur-md border-b border-onyx-card transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3 group">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+          <path d="M12 2L2 22H22L12 2Z" fill="white" />
+        </svg>
+        <div class="flex flex-col leading-none">
+          <span class="text-xl font-bold tracking-[0.25em] text-white uppercase">Onyx</span>
+          <span class="text-[9px] font-semibold tracking-[0.35em] text-onyx-muted uppercase group-hover:text-white transition-colors mt-0.5">Curates</span>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex gap-6 text-sm font-medium text-onyx-muted uppercase tracking-wider">
+        <a href="/" class="hover:text-white transition-colors">Home</a>
+        <a href="/category/tech"
+          class="{% if category.slug == 'tech' %}text-white font-semibold{% else %}hover:text-white{% endif %} transition-colors">Tech</a>
+        <a href="/category/decor"
+          class="{% if category.slug == 'decor' %}text-white font-semibold{% else %}hover:text-white{% endif %} transition-colors">Decor</a>
+        <a href="/category/gifts"
+          class="{% if category.slug == 'gifts' %}text-white font-semibold{% else %}hover:text-white{% endif %} transition-colors">Gifts</a>
+        <a href="/category/fashion"
+          class="{% if category.slug == 'fashion' %}text-white font-semibold{% else %}hover:text-white{% endif %} transition-colors">Fashion</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-6 pt-8 pb-24 w-full flex-grow animate-fade-in">
+
+    <!-- Category Banner -->
+    <div class="mb-10">
+      <a href="/"
+        class="group inline-flex items-center gap-2 text-onyx-muted hover:text-white transition-colors mb-4 text-xs font-medium tracking-wide uppercase">
+        <span class="transform group-hover:-translate-x-1 transition-transform">←</span> All Drops
+      </a>
+      <span class="text-xs uppercase tracking-widest text-onyx-muted font-bold block mb-1">Category</span>
+      <h1 class="text-4xl font-bold text-white tracking-tight uppercase tracking-widest">{{ category.name }}</h1>
+    </div>
+
+    {% if posts|length == 0 %}
+    <div class="text-center py-20 bg-onyx-card rounded-2xl border border-white/5">
+      <p class="text-onyx-muted text-base mb-4">No curated posts published yet in {{ category.name }}.</p>
+      <a href="/" class="affiliate-btn px-6 py-2.5 rounded-sm uppercase tracking-wider text-xs font-bold inline-block">
+        Explore All Posts &rarr;
+      </a>
+    </div>
+    {% else %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for post in posts %}
+      <article onclick="window.location.href='/post/{{ post.id }}'"
+        class="zoom-hover group relative aspect-[4/5] bg-onyx-card rounded-xl overflow-hidden cursor-pointer shadow-lg ring-1 ring-white/5">
+        <img src="{{ post.pin_image_url }}" alt="{{ post.title }}"
+          class="zoom-img absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out">
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-onyx-bg via-onyx-bg/20 to-transparent opacity-90 transition-opacity group-hover:opacity-100">
+        </div>
+        <div
+          class="absolute bottom-0 left-0 p-6 w-full transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+          <span
+            class="text-xs text-white bg-white/20 backdrop-blur-sm px-2 py-1 rounded-sm uppercase tracking-wider font-semibold mb-3 inline-block">
+            {{ category.name }}
+          </span>
+          <h2 class="text-2xl font-bold text-white leading-tight mb-2">{{ post.title }}</h2>
+          <p
+            class="text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 flex items-center gap-1">
+            Shop the Selection <span class="text-lg">→</span>
+          </p>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-onyx-card py-10 border-t border-white/5 mt-auto">
+    <div class="max-w-7xl mx-auto px-6 text-center flex flex-col items-center">
+      <p class="text-onyx-muted text-sm tracking-wider mb-4">&copy; 2026 Onyx Curates. All aesthetic rights reserved.
+      </p>
+      <div class="w-16 h-px bg-white/10 mb-4"></div>
+      <p class="text-xs text-onyx-muted/60 max-w-2xl leading-relaxed">
+        Onyx Curates is reader-supported. When you buy through links on our site, we may earn an affiliate commission.
+        Product prices and availability are accurate as of the date/time indicated and are subject to change.
+      </p>
+    </div>
+  </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onyx Curates | Admin CMS</title>
+    
+    <!-- Import Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS with Onyx Design System -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        onyx: {
+                            bg: '#121212',
+                            card: '#1A1A1A',
+                            text: '#E0E0E0',
+                            muted: '#888888',
+                            accent: '#FFFFFF'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(8px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background-color: #121212;
+            color: #E0E0E0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Minimalist Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121212; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+
+        /* Onyx Button */
+        .onyx-btn-primary {
+            background-color: #FFFFFF;
+            color: #121212;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            transition: all 0.25s ease;
+        }
+        .onyx-btn-primary:hover {
+            background-color: #E0E0E0;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .onyx-btn-outline {
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #FFFFFF;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            transition: all 0.25s ease;
+        }
+        .onyx-btn-outline:hover {
+            border-color: #FFFFFF;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Product Image Container (Amazon white background simulation) */
+        .product-img-container {
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .product-img-container img {
+            mix-blend-mode: multiply;
+        }
+
+        .input-onyx {
+            background-color: #121212;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #FFFFFF;
+            transition: all 0.2s ease;
+        }
+        .input-onyx:focus {
+            outline: none;
+            border-color: #FFFFFF;
+            box-shadow: 0 0 0 1px #FFFFFF;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-white selection:text-onyx-bg min-h-screen flex flex-col">
+
+    <!-- Minimalist Header -->
+    <header class="sticky top-0 z-50 bg-onyx-bg/90 backdrop-blur-md border-b border-onyx-card transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="/" class="flex items-center gap-3 group">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+                        <path d="M12 2L2 22H22L12 2Z" fill="white"/>
+                    </svg>
+                    <div class="flex flex-col leading-none">
+                        <span class="text-xl font-bold tracking-[0.25em] text-white uppercase">Onyx</span>
+                        <span class="text-[9px] font-semibold tracking-[0.35em] text-onyx-muted uppercase group-hover:text-white transition-colors mt-0.5">Curates</span>
+                    </div>
+                </a>
+                <span class="text-[10px] font-mono tracking-widest uppercase px-2 py-0.5 rounded border border-white/10 text-onyx-muted bg-onyx-card">
+                    CMS Studio
+                </span>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <a href="/" target="_blank" class="text-xs uppercase tracking-widest text-onyx-muted hover:text-white transition-colors flex items-center gap-1.5 font-medium">
+                    <span>Live Site</span>
+                    <span class="text-sm">↗</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Studio Container -->
+    <main class="max-w-6xl mx-auto px-6 py-10 w-full flex-grow space-y-12">
+        
+        <!-- Alerts (Toasts) -->
+        {% if msg %}
+        <div class="bg-onyx-card border border-white/20 text-white rounded-xl p-4 flex items-center justify-between shadow-xl animate-fade-in">
+            <div class="flex items-center gap-3 text-sm">
+                <span class="w-2 h-2 rounded-full bg-white"></span>
+                <span>{{ msg }}</span>
+            </div>
+            <button onclick="this.parentElement.remove()" class="text-onyx-muted hover:text-white text-xs uppercase tracking-wider">Dismiss</button>
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="bg-onyx-card border border-red-500/50 text-red-200 rounded-xl p-4 flex items-center justify-between shadow-xl animate-fade-in">
+            <div class="flex items-center gap-3 text-sm">
+                <span class="w-2 h-2 rounded-full bg-red-400"></span>
+                <span>{{ error }}</span>
+            </div>
+            <button onclick="this.parentElement.remove()" class="text-onyx-muted hover:text-white text-xs uppercase tracking-wider">Dismiss</button>
+        </div>
+        {% endif %}
+
+        <!-- Studio Header / Strategy Banner -->
+        <div class="border-b border-white/10 pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div>
+                <span class="text-xs uppercase tracking-widest text-onyx-muted font-bold block mb-2">Pinterest 1:1 Engine</span>
+                <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight">Pin-to-Post Studio</h1>
+                <p class="text-sm text-onyx-muted mt-2 max-w-xl">
+                    Publish your aesthetic pins and attach verified Amazon affiliate items. Each post produces a 1:1 destination link ready to plug into Pinterest.
+                </p>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="#new-look" class="onyx-btn-primary px-6 py-3 rounded-sm flex items-center gap-2">
+                    <span>+ New Post</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Section 1: Create New Pin -->
+        <section id="new-look" class="bg-onyx-card border border-white/5 rounded-2xl p-6 sm:p-8 shadow-2xl">
+            <div class="mb-6">
+                <h2 class="text-xl font-bold text-white uppercase tracking-wider">Create New Pin</h2>
+                <p class="text-xs text-onyx-muted mt-1">Upload the pin image and select its category.</p>
+            </div>
+
+            <form action="/admin/create-post" method="POST" enctype="multipart/form-data" class="space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    
+                    <!-- Left: Metadata inputs (7 cols) -->
+                    <div class="lg:col-span-7 space-y-5">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-onyx-muted mb-2">
+                                Post Title <span class="text-white">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                name="title" 
+                                required 
+                                placeholder="e.g. Minimalist Japandi Setup"
+                                class="input-onyx w-full rounded-lg px-4 py-3 text-sm placeholder-onyx-muted/40"
+                            >
+                            <p class="text-[11px] text-onyx-muted mt-1.5">Match this to your Pinterest Pin title for high relevance.</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-onyx-muted mb-2">
+                                Category <span class="text-white">*</span>
+                            </label>
+                            <select 
+                                name="category_id" 
+                                required 
+                                class="input-onyx w-full rounded-lg px-4 py-3 text-sm text-white"
+                            >
+                                <option value="" disabled selected>Select category...</option>
+                                {% for cat in categories %}
+                                <option value="{{ cat.id }}">{{ cat.name }} (/category/{{ cat.slug }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-onyx-bg/60 border border-white/5 text-xs text-onyx-muted leading-relaxed">
+                            <span class="text-white font-medium block mb-1">1:1 Conversion Strategy:</span>
+                            When users click your Pinterest Pin, they land on this exact post page with your tagged Amazon items displayed cleanly beneath it.
+                        </div>
+                    </div>
+
+                    <!-- Right: Drag & Drop Image Upload (5 cols) -->
+                    <div class="lg:col-span-5">
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-onyx-muted mb-2">
+                            Primary Pin Image <span class="text-white">*</span>
+                        </label>
+                        <div class="border-2 border-dashed border-white/10 hover:border-white/40 rounded-xl p-6 text-center bg-onyx-bg/50 transition-all flex flex-col items-center justify-center min-h-[220px] relative group cursor-pointer">
+                            <input 
+                                type="file" 
+                                name="pin_image" 
+                                accept="image/png, image/jpeg, image/jpg, image/webp" 
+                                required 
+                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                onchange="previewPin(this)"
+                            >
+                            
+                            <div id="upload-placeholder" class="space-y-3 pointer-events-none flex flex-col items-center">
+                                <div class="w-12 h-12 rounded-full bg-onyx-card border border-white/10 flex items-center justify-center text-onyx-muted group-hover:text-white transition-colors">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <p class="text-xs text-onyx-muted">
+                                    <span class="text-white font-medium">Click to select</span> or drop 2:3 pin image
+                                </p>
+                                <p class="text-[10px] text-onyx-muted/60">JPG, PNG, WEBP up to 10MB</p>
+                            </div>
+
+                            <div id="upload-preview-box" class="hidden w-full flex flex-col items-center">
+                                <img id="pin-preview-img" src="" alt="Preview" class="max-h-48 rounded-lg object-contain shadow-lg border border-white/10">
+                                <span id="pin-file-info" class="text-[11px] text-onyx-muted mt-2 font-mono truncate max-w-xs"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-4 border-t border-white/5">
+                    <button type="submit" class="onyx-btn-primary px-8 py-3 rounded-sm">
+                        Publish Post
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Section 2: Manage Existing Posts & Products -->
+        <section class="space-y-6">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                <h2 class="text-xl font-bold text-white uppercase tracking-wider">
+                    Published Posts ({{ posts|length }})
+                </h2>
+                <span class="text-xs text-onyx-muted uppercase tracking-widest">
+                    Amazon PA-API Compliant
+                </span>
+            </div>
+
+            {% if posts|length == 0 %}
+            <div class="text-center py-20 bg-onyx-card rounded-2xl border border-white/5">
+                <p class="text-onyx-muted text-base mb-2">No posts created yet.</p>
+                <p class="text-xs text-onyx-muted/60">Use the form above to publish your first Pinterest post.</p>
+            </div>
+            {% endif %}
+
+            <!-- Posts List -->
+            <div class="space-y-8">
+                {% for post in posts %}
+                <div class="bg-onyx-card border border-white/5 rounded-2xl overflow-hidden shadow-xl transition-all hover:border-white/15">
+                    
+                    <!-- Post Header Bar -->
+                    <div class="p-6 bg-onyx-card/80 border-b border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-5">
+                        <div class="flex items-center gap-5">
+                            <!-- Thumbnail -->
+                            <div class="w-16 h-20 rounded-lg overflow-hidden bg-onyx-bg border border-white/10 shrink-0">
+                                <img src="{{ post.pin_image_url }}" alt="{{ post.title }}" class="w-full h-full object-cover">
+                            </div>
+                            
+                            <!-- Post Info -->
+                            <div>
+                                <div class="flex items-center gap-2 mb-1.5">
+                                    <span class="text-xs font-mono text-white/50">#{{ post.id }}</span>
+                                    <span class="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-white/10 text-white">
+                                        {{ post.category.name if post.category else 'Curated' }}
+                                    </span>
+                                </div>
+                                <h3 class="text-lg font-bold text-white leading-snug">{{ post.title }}</h3>
+                            </div>
+                        </div>
+
+                        <!-- Target Destination Link & Actions -->
+                        <div class="flex items-center gap-3">
+                            <div class="text-right hidden sm:block">
+                                <span class="text-[10px] uppercase font-bold tracking-widest text-onyx-muted block">Pinterest Target</span>
+                                <a href="/post/{{ post.id }}" target="_blank" class="text-xs font-mono text-white hover:underline">
+                                    /post/{{ post.id }} ↗
+                                </a>
+                            </div>
+                            <button 
+                                onclick="copyTargetLink('{{ post.id }}', this)" 
+                                class="onyx-btn-outline px-4 py-2 rounded-sm"
+                            >
+                                Copy Pin URL
+                            </button>
+                            <form action="/admin/post/{{ post.id }}/delete" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this post? All linked affiliate products will also be permanently deleted.');">
+                                <button 
+                                    type="submit" 
+                                    class="text-xs text-red-400 hover:text-white hover:bg-red-600/80 border border-red-500/30 px-3.5 py-2 rounded-sm transition-all flex items-center gap-1.5 font-semibold"
+                                    title="Delete Post #{{ post.id }}"
+                                >
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    <span>Delete Post</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Products Section -->
+                    <div class="p-6 space-y-6">
+                        
+                        <!-- Products List -->
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs uppercase tracking-widest text-onyx-muted font-semibold">
+                                    Affiliate Products ({{ post.products|length }})
+                                </span>
+                            </div>
+
+                            {% if post.products|length == 0 %}
+                            <div class="p-6 rounded-xl bg-onyx-bg/40 border border-white/5 text-center text-xs text-onyx-muted">
+                                No affiliate products linked yet. Enter an Amazon ASIN below to add the first item.
+                            </div>
+                            {% else %}
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {% for prod in post.products %}
+                                <div class="bg-onyx-bg/60 border border-white/5 rounded-xl p-4 flex flex-col justify-between gap-3 hover:border-white/20 transition-all">
+                                    <div class="flex gap-4">
+                                        <!-- Amazon Image -->
+                                        <div class="product-img-container w-16 h-16 shrink-0 relative p-1">
+                                            <img src="{{ prod.amazon_image_url }}" alt="{{ prod.product_title }}" class="w-full h-full object-contain">
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <div class="flex items-center justify-between gap-1 mb-1">
+                                                <span class="text-[10px] font-mono text-white/50 px-1.5 py-0.5 rounded bg-white/5">
+                                                    {{ prod.asin }}
+                                                </span>
+                                                {% if prod.price %}
+                                                <span class="text-xs font-bold text-white">${{ "%.2f"|format(prod.price) }}</span>
+                                                {% endif %}
+                                            </div>
+                                            <h4 class="text-xs font-medium text-white truncate" title="{{ prod.product_title }}">
+                                                {{ prod.product_title }}
+                                            </h4>
+                                        </div>
+                                    </div>
+
+                                    <!-- Hook Text -->
+                                    <p class="text-[11px] text-onyx-muted italic bg-onyx-card/80 p-2 rounded line-clamp-2">
+                                        &ldquo;{{ prod.hook_text }}&rdquo;
+                                    </p>
+
+                                    <!-- Direct Test Link & Remove Item -->
+                                    <div class="pt-2 border-t border-white/5 flex items-center justify-between text-[11px]">
+                                        <a href="{{ prod.affiliate_url }}" target="_blank" rel="noopener noreferrer" class="text-white hover:underline font-medium flex items-center gap-1">
+                                            Test Link ↗
+                                        </a>
+                                        <form action="/admin/product/{{ prod.id }}/delete" method="POST" class="inline" onsubmit="return confirm('Remove product {{ prod.asin }} from this post?');">
+                                            <button type="submit" class="text-red-400 hover:text-red-300 hover:underline flex items-center gap-1 text-[11px] font-medium transition-colors" title="Remove {{ prod.asin }}">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                                <span>Remove</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Form: Quick Add Affiliate Product -->
+                        <div class="pt-4 border-t border-white/5">
+                            <details class="group bg-onyx-bg/40 border border-white/5 rounded-xl overflow-hidden transition-all">
+                                <summary class="p-4 cursor-pointer flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-white hover:bg-white/5 transition-colors select-none">
+                                    <span>+ Add Amazon Item to Post #{{ post.id }}</span>
+                                    <span class="text-onyx-muted text-[11px] normal-case group-open:hidden">Click to expand form</span>
+                                </summary>
+                                
+                                <form action="/admin/post/{{ post.id }}/add-product" method="POST" class="p-5 pt-3 border-t border-white/5 space-y-4 attach-product-form">
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div>
+                                            <label class="block text-[11px] font-semibold uppercase tracking-wider text-onyx-muted mb-1.5">
+                                                Amazon ASIN <span class="text-white">*</span>
+                                            </label>
+                                            <input 
+                                                type="text" 
+                                                name="asin" 
+                                                required 
+                                                maxlength="20"
+                                                placeholder="e.g. B09B8V1LZ3" 
+                                                class="input-onyx w-full rounded-lg px-3 py-2 text-xs font-mono uppercase text-white"
+                                            >
+                                        </div>
+                                        <div class="md:col-span-2">
+                                            <label class="block text-[11px] font-semibold uppercase tracking-wider text-onyx-muted mb-1.5">
+                                                Contextual Hook Text <span class="text-white">*</span>
+                                            </label>
+                                            <input 
+                                                type="text" 
+                                                name="hook_text" 
+                                                required 
+                                                placeholder="e.g. Heavyweight 400gsm cotton blank hoodie with drop-shoulder fit" 
+                                                class="input-onyx w-full rounded-lg px-3 py-2 text-xs text-white"
+                                            >
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center justify-between pt-2">
+                                        <span class="text-[11px] text-onyx-muted">
+                                            Playwright scrapes live Amazon title, price, and high-res media.
+                                        </span>
+                                        <button type="submit" class="onyx-btn-primary px-5 py-2.5 rounded-sm text-xs attach-submit-btn flex items-center justify-center gap-2 min-w-[140px]">
+                                            <span class="btn-text">Link Product</span>
+                                            <span class="btn-spinner hidden flex items-center gap-2">
+                                                <svg class="animate-spin h-3.5 w-3.5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                                <span>Scraping Amazon...</span>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </details>
+                        </div>
+
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-onyx-card py-8 border-t border-white/5 mt-auto">
+        <div class="max-w-6xl mx-auto px-6 text-center text-xs text-onyx-muted flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <span class="font-bold tracking-widest uppercase text-white">Onyx Curates</span>
+                <span>•</span>
+                <span>Private CMS Studio</span>
+            </div>
+            <p class="text-[11px]">Amazon Associates Compliance Enforced.</p>
+        </div>
+    </footer>
+
+    <!-- Interactive Scripts -->
+    <script>
+        function previewPin(input) {
+            const placeholder = document.getElementById('upload-placeholder');
+            const previewBox = document.getElementById('upload-preview-box');
+            const img = document.getElementById('pin-preview-img');
+            const info = document.getElementById('pin-file-info');
+
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                    info.textContent = file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+                    placeholder.classList.add('hidden');
+                    previewBox.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function copyTargetLink(postId, btn) {
+            const url = window.location.origin + '/post/' + postId;
+            navigator.clipboard.writeText(url).then(function() {
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.classList.add('bg-white', 'text-black');
+                setTimeout(function() {
+                    btn.textContent = originalText;
+                    btn.classList.remove('bg-white', 'text-black');
+                }, 2000);
+            });
+        }
+
+        // Intercept Attach Product form submissions to provide visual feedback during Playwright scraping
+        document.querySelectorAll('.attach-product-form').forEach(function(form) {
+            form.addEventListener('submit', function() {
+                const btn = form.querySelector('.attach-submit-btn');
+                if (btn) {
+                    const btnText = btn.querySelector('.btn-text');
+                    const btnSpinner = btn.querySelector('.btn-spinner');
+                    if (btnText) btnText.classList.add('hidden');
+                    if (btnSpinner) btnSpinner.classList.remove('hidden');
+                    
+                    // Disable button slightly after submit begins to ensure form data sends
+                    setTimeout(function() {
+                        btn.disabled = true;
+                        btn.classList.add('opacity-75', 'cursor-not-allowed');
+                    }, 20);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

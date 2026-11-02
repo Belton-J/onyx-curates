@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.title }} | Onyx Curates</title>
+    
+    <!-- OpenGraph / Pinterest Rich Pins -->
+    <meta property="og:title" content="{{ post.title }} | Onyx Curates">
+    <meta property="og:description" content="Shop the selection: {{ post.title }}. Direct verified Amazon sources.">
+    <meta property="og:image" content="{{ post.pin_image_url }}">
+    <meta property="og:type" content="article">
+
+    <!-- Import Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        onyx: {
+                            bg: '#121212',
+                            card: '#1A1A1A',
+                            text: '#E0E0E0',
+                            muted: '#888888',
+                            accent: '#FFFFFF'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.4s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background-color: #121212;
+            color: #E0E0E0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Minimalist Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121212; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+
+        /* Affiliate Button Hover Magic */
+        .affiliate-btn {
+            background-color: transparent;
+            border: 1px solid #FFFFFF;
+            color: #FFFFFF;
+            transition: all 0.3s ease;
+        }
+        .affiliate-btn:hover {
+            background-color: #FFFFFF;
+            color: #121212;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Product Image Container (Simulates Amazon white background) */
+        .product-img-container {
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .product-img-container img {
+            mix-blend-mode: multiply;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-white selection:text-onyx-bg min-h-screen flex flex-col">
+
+    <!-- Sticky Minimalist Header -->
+    <header class="sticky top-0 z-50 bg-onyx-bg/90 backdrop-blur-md border-b border-onyx-card transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-3 group">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+                    <path d="M12 2L2 22H22L12 2Z" fill="white"/>
+                </svg>
+                <div class="flex flex-col leading-none">
+                    <span class="text-xl font-bold tracking-[0.25em] text-white uppercase">Onyx</span>
+                    <span class="text-[9px] font-semibold tracking-[0.35em] text-onyx-muted uppercase group-hover:text-white transition-colors mt-0.5">Curates</span>
+                </div>
+            </a>
+            
+            <nav class="hidden md:flex gap-6 text-sm font-medium text-onyx-muted uppercase tracking-wider">
+                <a href="/" class="hover:text-white transition-colors">Home</a>
+                <a href="/category/tech" class="hover:text-white transition-colors">Tech</a>
+                <a href="/category/decor" class="hover:text-white transition-colors">Decor</a>
+                <a href="/category/gifts" class="hover:text-white transition-colors">Gifts</a>
+                <a href="/category/fashion" class="hover:text-white transition-colors">Fashion</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow pb-24">
+        
+        <!-- ========================================== -->
+        <!-- VIEW 2: CONVERSION PAGE (SHOP THE LOOK)    -->
+        <!-- ========================================== -->
+        <section id="view-look" class="max-w-7xl mx-auto px-6 pt-8 pb-12 animate-fade-in">
+            
+            <!-- Navigation Back -->
+            <a href="/" class="group inline-flex items-center gap-2 text-onyx-muted hover:text-white transition-colors mb-8 text-sm font-medium tracking-wide uppercase">
+                <span class="transform group-hover:-translate-x-1 transition-transform">←</span> Back to Posts
+            </a>
+
+            <div class="flex flex-col lg:flex-row gap-10 lg:gap-16">
+                
+                <!-- Left Column: Hero/Anchor Image (Sticky on Desktop) -->
+                <div class="w-full lg:w-5/12">
+                    <div class="sticky top-28">
+                        <div class="relative rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10">
+                            <!-- This image matches the pin they clicked on Pinterest -->
+                            <img src="{{ post.pin_image_url }}" alt="{{ post.title }}" class="w-full h-auto object-cover aspect-[3/4] lg:aspect-[4/5]">
+                        </div>
+                        <div class="mt-6 text-center lg:text-left">
+                            {% if post.category %}
+                            <span class="text-xs uppercase tracking-widest text-onyx-muted font-semibold block mb-2">{{ post.category.name }}</span>
+                            {% endif %}
+                            <h1 class="text-3xl font-bold text-white mb-2">{{ post.title }}</h1>
+                            <p class="text-onyx-muted leading-relaxed">
+                                The exact aesthetic scene curated for this post. Every piece below corresponds directly to items featured in this composition.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Product Cards Stack -->
+                <div class="w-full lg:w-7/12 flex flex-col gap-6">
+                    <div class="flex items-center gap-4 mb-2">
+                        <div class="h-px bg-onyx-card flex-grow"></div>
+                        <span class="text-xs uppercase tracking-widest text-onyx-muted font-semibold">Shop The Selection ({{ post.products|length }})</span>
+                        <div class="h-px bg-onyx-card flex-grow"></div>
+                    </div>
+
+                    {% if post.products|length == 0 %}
+                    <div class="bg-onyx-card border border-white/5 rounded-xl p-8 text-center">
+                        <p class="text-onyx-muted">Affiliate links for this selection are currently being updated.</p>
+                    </div>
+                    {% else %}
+                    {% for prod in post.products %}
+                    <!-- Product Card -->
+                    <div class="bg-onyx-card border border-white/5 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row gap-5 sm:gap-6 hover:border-white/20 transition-colors shadow-lg">
+                        
+                        <!-- Amazon CDN Image Container -->
+                        <div class="product-img-container w-full sm:w-40 h-48 sm:h-auto shrink-0 relative p-4">
+                            <img src="{{ prod.amazon_image_url }}" alt="{{ prod.product_title }}" class="w-full h-full object-contain absolute inset-0 p-4" loading="lazy">
+                        </div>
+                        
+                        <div class="flex flex-col flex-grow justify-between py-1">
+                            <div>
+                                <h3 class="text-xl font-bold text-white leading-tight mb-1">{{ prod.product_title }}</h3>
+                                <p class="text-sm text-onyx-muted mb-3 line-clamp-2">"{{ prod.hook_text }}"</p>
+                            </div>
+                            <div class="mt-4 sm:mt-0">
+                                {% if prod.price %}
+                                <div class="text-2xl font-bold text-white mb-4">${{ "%.2f"|format(prod.price) }}</div>
+                                {% endif %}
+                                <a href="{{ prod.affiliate_url }}" target="_blank" rel="nofollow noopener sponsored" class="affiliate-btn w-full py-3 px-4 flex justify-center items-center font-bold tracking-[0.1em] uppercase rounded-sm text-sm">
+                                    Buy on Amazon
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    <!-- Amazon Associates & FTC Compliance Notice -->
+                    <div class="p-4 rounded-xl bg-onyx-card/60 border border-white/5 text-xs text-onyx-muted leading-relaxed mt-4">
+                        <p class="font-medium text-white mb-1">Affiliate Disclosure:</p>
+                        <p>
+                            As an Amazon Associate, Onyx Curates earns from qualifying purchases. Product prices and availability are accurate as of the date/time indicated and are subject to change. Any price displayed on Amazon at the time of purchase will apply.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-onyx-card py-10 border-t border-white/5 mt-auto">
+        <div class="max-w-7xl mx-auto px-6 text-center flex flex-col items-center">
+            <p class="text-onyx-muted text-sm tracking-wider mb-4">&copy; 2026 Onyx Curates. All aesthetic rights reserved.</p>
+            <div class="w-16 h-px bg-white/10 mb-4"></div>
+            <p class="text-xs text-onyx-muted/60 max-w-2xl leading-relaxed">
+                Onyx Curates is reader-supported. When you buy through links on our site, we may earn an affiliate commission. 
+                Product prices and availability are accurate as of the date/time indicated and are subject to change.
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
