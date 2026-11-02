@@ -8,8 +8,12 @@ load_dotenv()
 # Default to PostgreSQL, with graceful fallback to local SQLite for instant testing if not configured
 DATABASE_URL = os.getenv(
     "DATABASE_URL", 
-    "postgresql+psycopg2://postgres:postgres@localhost:5432/onyxcurates"
+    "postgresql://postgres:postgres@localhost:5432/onyxcurates"
 )
+
+# Normalize legacy postgres:// scheme to postgresql:// (required by SQLAlchemy)
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 # Connect args special handling (e.g., check_same_thread for SQLite)
 connect_args = {}

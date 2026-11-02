@@ -54,7 +54,10 @@ UPLOAD_DIR = Path("static/uploads")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 # Create database tables automatically upon startup
-Base.metadata.create_all(bind=engine)
+try:
+    Base.metadata.create_all(bind=engine)
+except Exception as e:
+    print(f"[Database Init Warning] Could not initialize database tables: {e}")
 
 app = FastAPI(
     title="Onyx Curates - Pin-to-Post Affiliate Engine",
@@ -73,19 +76,22 @@ templates = Jinja2Templates(directory="templates")
 @app.on_event("startup")
 def seed_default_categories():
     """Seeds starter categories if the database is brand new."""
-    db: Session = next(get_db())
     try:
-        if db.query(models.Category).count() == 0:
-            default_categories = [
-                models.Category(name="Tech", slug="tech"),
-                models.Category(name="Decor", slug="decor"),
-                models.Category(name="Gifts", slug="gifts"),
-                models.Category(name="Fashion", slug="fashion")
-            ]
-            db.add_all(default_categories)
-            db.commit()
-    finally:
-        db.close()
+        db: Session = next(get_db())
+        try:
+            if db.query(models.Category).count() == 0:
+                default_categories = [
+                    models.Category(name="Tech", slug="tech"),
+                    models.Category(name="Decor", slug="decor"),
+                    models.Category(name="Gifts", slug="gifts"),
+                    models.Category(name="Fashion", slug="fashion")
+                ]
+                db.add_all(default_categories)
+                db.commit()
+        finally:
+            db.close()
+    except Exception as e:
+        print(f"[Startup Warning] Could not seed categories: {e}")
 
 
 # -----------------------------------------------------------------------------
