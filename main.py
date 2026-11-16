@@ -7,7 +7,7 @@ import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
-
+from fastapi.responses import Response
 import asyncio
 from dotenv import load_dotenv
 from fastapi import FastAPI, Depends, Request, Form, File, UploadFile, HTTPException, status
@@ -612,3 +612,11 @@ def post_create_category(
     db.commit()
 
     return RedirectResponse(url=f"/admin?msg=Category+'{name_clean}'+created", status_code=status.HTTP_303_SEE_OTHER)
+
+@app.api_route("/health",methods=["GET", "HEAD"])
+async def health():
+    return Response(
+        content='{"status":"ok"}',
+        media_type="application/json",
+        status_code=200
+    )
